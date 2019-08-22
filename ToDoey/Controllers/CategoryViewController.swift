@@ -25,7 +25,7 @@ class CategoryViewController: UITableViewController {
     // MARK: - Table view data source
    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
+        
         return categoryArray?.count ?? 1
     }
     
@@ -59,13 +59,13 @@ class CategoryViewController: UITableViewController {
 
     // MARK: - Data Manipulation
 
-    func saveCategories(caregory: Category) {
+    func saveCategories(category: Category) {
         do {
-            try realm.write{
-                try realm.add(caregory)
+            try realm.write {
+                realm.add(category)
             }
         } catch {
-            print("Error saving context, \(error)")
+            print("Error saving category, \(error)")
         }
         self.tableView.reloadData()
     }
@@ -91,7 +91,7 @@ class CategoryViewController: UITableViewController {
             let newCategory = Category()
             newCategory.name = textField.text!
             
-            self.saveCategories(caregory: newCategory)
+            self.saveCategories(category: newCategory)
         }
         
         alert.addTextField { (alertTextField) in
