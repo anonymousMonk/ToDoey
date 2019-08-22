@@ -130,7 +130,8 @@ class ToDoListViewController: UITableViewController {
         } else {
             request.predicate = categoryPredicate
         }
-        
+     
+        // Example before changing code to optional unwrapping
 //        let compoundPredicate = NSCompoundPredicate(notPredicateWithSubpredicate: [categoryPredicate, predicate])
 //
 //        request.predicate = compoundPredicate
