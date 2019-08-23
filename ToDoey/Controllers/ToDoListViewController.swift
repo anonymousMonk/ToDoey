@@ -8,8 +8,9 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
-class ToDoListViewController: UITableViewController {
+class ToDoListViewController: SwipeTableViewController {
     
     var todoItems : Results<Item>?
     let realm = try! Realm()
@@ -25,7 +26,7 @@ class ToDoListViewController: UITableViewController {
         super.viewDidLoad()
         
         
-        // For testing: Print location to console to check database file
+        /* For testing, uncomment below: Print location to console to check database file */
 //        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist"))
     }
 
@@ -35,9 +36,11 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todoItems?.count ?? 1
     }
+    
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         // Display checkmarks for Item.done
         if let item = todoItems?[indexPath.row] {
@@ -50,7 +53,6 @@ class ToDoListViewController: UITableViewController {
         } else {
             cell.textLabel?.text = "No items added"
         }
-        
         
         return cell
     }
@@ -72,11 +74,6 @@ class ToDoListViewController: UITableViewController {
         }
         tableView.reloadData()
         
-        // print(itemArray[indexPath.row].title)
-        
-//        todoItems[indexPath.row].done = !todoItems[indexPath.row].done
-        
-//        self.saveItems()
         
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -112,11 +109,7 @@ class ToDoListViewController: UITableViewController {
             }
             
 
-            
-//            newItem.parentCategory = self.selectedCategory
-//            self.itemArray.append(newItem)
-            
-//            self.saveItems() //// No longer needed, done in closure of Add button
+          self.saveItems() //// No longer needed, done in closure of Add button
         }
         
         alert.addTextField { (alertTextField) in
@@ -132,46 +125,25 @@ class ToDoListViewController: UITableViewController {
     
     //MARK - Model Manipulation Methods
     
-// // Saving is now done in closure of Add Button
-//    func saveItems() {
-//
-//        do {
-//            try context.save()
-//
-//        } catch {
-//            print("Error saving context, \(error)")
-//        }
-//        self.tableView.reloadData()
-//    }
-    
     func loadItems() {
         
         todoItems = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: true)
 
-        // CoreData version commented out below
-//        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
-//
-//        if let additionalPredicate = predicate {
-//            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
-//        } else {
-//            request.predicate = categoryPredicate
-//        }
-//
-//        // Example before changing code to optional unwrapping
-////        let compoundPredicate = NSCompoundPredicate(notPredicateWithSubpredicate: [categoryPredicate, predicate])
-////
-////        request.predicate = compoundPredicate
-//
-//        do {
-//            itemArray = try context.fetch(request)
-//        } catch {
-//            print("Error fetching data from contet \(error)")
-//        }
-
         self.tableView.reloadData()
-//        print("Log: reloadData() within loadItems()")
+
     }
     
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = todoItems?[indexPath.row] {
+            do {
+                try realm.write {
+                    realm.delete(item)
+                }
+            } catch {
+                print("Error deleting item, \(error)")
+            }
+        }
+    }
 
 }
 

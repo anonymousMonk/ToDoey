@@ -14,14 +14,15 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        tableView.rowHeight = 80
 
     }
 
     //MARK: = TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
-            cell.delegate = self
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
+        cell.delegate = self
         
         return cell
     }
@@ -54,6 +55,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     // MARK: - Navigation
     func updateModel(at indexPath: IndexPath) {
         // Update our data model
+        // Override in subclass
     }
    
 
