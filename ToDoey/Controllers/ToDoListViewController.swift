@@ -29,7 +29,7 @@ class ToDoListViewController: UITableViewController {
 //        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist"))
     }
 
-    //MARK - Tableview Datasource method
+    //MARK: - Tableview Datasource method
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -56,7 +56,7 @@ class ToDoListViewController: UITableViewController {
     }
     
 
-    //MARK - TableView Delegate Methods
+    //MARK: - TableView Delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -64,12 +64,13 @@ class ToDoListViewController: UITableViewController {
             do {
                 try realm.write {
                     item.done = !item.done
-                    print("Log: item.done = !item.done was called")
+//                    print("Log: item.done = !item.done was called")
                 }
             } catch {
-                print("Error savng done status, \(error)")
+                print("Error saving done status, \(error)")
             }
         }
+        tableView.reloadData()
         
         // print(itemArray[indexPath.row].title)
         
@@ -95,10 +96,11 @@ class ToDoListViewController: UITableViewController {
             
             if let currentCategory = self.selectedCategory {
                 do {
-                    try self.realm.write{
+                    try self.realm.write {
                         let newItem = Item()
                         newItem.title = textField.text!
 //                        newItem.done = false /// This was missing from sample code
+                        newItem.dateCreated = Date()
                         currentCategory.items.append(newItem)
                         
                     }
@@ -129,6 +131,7 @@ class ToDoListViewController: UITableViewController {
     }
     
     //MARK - Model Manipulation Methods
+    
 // // Saving is now done in closure of Add Button
 //    func saveItems() {
 //
@@ -143,7 +146,7 @@ class ToDoListViewController: UITableViewController {
     
     func loadItems() {
         
-        todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        todoItems = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: true)
 
         // CoreData version commented out below
 //        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
@@ -166,7 +169,7 @@ class ToDoListViewController: UITableViewController {
 //        }
 
         self.tableView.reloadData()
-        print("Log: reloadData() within loadItems()")
+//        print("Log: reloadData() within loadItems()")
     }
     
 
@@ -174,27 +177,24 @@ class ToDoListViewController: UITableViewController {
 
 //MARK: - Search bar methods
 
-//extension ToDoListViewController: UISearchBarDelegate {
-//
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        let request : NSFetchRequest<Item> = Item.fetchRequest()
-//
-//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//
-//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-//
-//        loadItems(with: request, predicate: predicate)
-//
-//    }
-//
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchBar.text?.count == 0 {
-//            loadItems()
-//
-//            DispatchQueue.main.async {
-//                searchBar.resignFirstResponder()
-//            }
-//
-//        }
-//    }
-//}
+extension ToDoListViewController: UISearchBarDelegate {
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        
+        self.tableView.reloadData()
+
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+
+        }
+    }
+}
