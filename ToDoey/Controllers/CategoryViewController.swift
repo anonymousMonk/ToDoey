@@ -83,12 +83,6 @@ class CategoryViewController: SwipeTableViewController {
         
         categories = realm.objects(Category.self)
         
-        for category in categories! {
-            if category.color == nil {
-                category.color = UIColor.randomFlat.hexValue()
-            }
-        }
-        
         tableView.reloadData()
         
     }
