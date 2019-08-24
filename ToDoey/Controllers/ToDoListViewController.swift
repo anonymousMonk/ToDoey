@@ -30,29 +30,36 @@ class ToDoListViewController: SwipeTableViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         
-        if let colorHex = selectedCategory?.color {
-            
-            title = selectedCategory!.name
-            
-            guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist.")}
-            
-            if let navBarColor = UIColor(hexString: colorHex) {
-                
-                navBar.barTintColor = UIColor(hexString: colorHex)
-                
-                navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
-                
-                navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
-                
-                searchBar.barTintColor = navBarColor
-                
-            }
-            
-            
-            
-        }
+        title = selectedCategory!.name
+        
+        guard let colorHex = selectedCategory?.color else { fatalError() }
+        
+        updateNavBar(withHexcode: colorHex)
         
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        updateNavBar(withHexcode: "1D9BF6")
+        
+    }
+    
+    //MARK: - Nav Bar Setup Methods
+    
+    func updateNavBar(withHexcode colorHexCode: String) {
+        guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist.")}
+        
+        guard let navBarColor = UIColor(hexString: colorHexCode) else { fatalError() }
+        
+        navBar.barTintColor = UIColor(hexString: colorHexCode)
+        
+        navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+        
+        navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
+        
+        searchBar.barTintColor = navBarColor
+    }
+    
     //MARK: - Tableview Datasource method
     
     
