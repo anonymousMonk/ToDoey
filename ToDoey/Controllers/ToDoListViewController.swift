@@ -109,7 +109,6 @@ class ToDoListViewController: SwipeTableViewController {
             }
             
 
-          self.saveItems() //// No longer needed, done in closure of Add button
         }
         
         alert.addTextField { (alertTextField) in
