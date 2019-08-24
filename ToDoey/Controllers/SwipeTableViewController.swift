@@ -18,6 +18,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 
     }
 
+    @IBOutlet weak var searchBar: UISearchBar!
     //MARK: = TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
